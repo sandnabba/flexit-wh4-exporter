@@ -1,0 +1,11 @@
+services:
+  wh4-exporter:
+    build: .
+    container_name: wh4-exporter
+    restart: unless-stopped
+    ports:
+      - "9846:9846"
+    environment:
+      # IP address of the WH4 (shown in Flexit GO under More > System information).
+      WH4_TARGET: "192.168.1.50"
+      WH4_DEVICE_ID: "2"

@@ -1,0 +1,24 @@
+[Unit]
+Description=Prometheus exporter for Flexit EcoNordic WH4 (BACnet/IP)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+# Install:
+#   python3 -m venv /opt/wh4-exporter/venv
+#   /opt/wh4-exporter/venv/bin/pip install -r requirements.txt
+#   cp wh4_exporter.py points.yaml /opt/wh4-exporter/
+ExecStart=/opt/wh4-exporter/venv/bin/python -u /opt/wh4-exporter/wh4_exporter.py
+Environment=WH4_TARGET=192.168.1.50
+Environment=WH4_DEVICE_ID=2
+Restart=on-failure
+RestartSec=10
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

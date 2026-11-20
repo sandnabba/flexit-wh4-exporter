@@ -1,0 +1,140 @@
+# Point list for wh4-exporter. Every entry is read with ReadPropertyMultiple (presentValue).
+#
+#   object:  BACnet object, "<type>,<instance>" (see docs/bacnet-objects.csv)
+#   metric:  metric name without the "wh4_" prefix. Points sharing a metric name must use
+#            the same label keys.
+#   type:    gauge   - plain value
+#            counter - monotonically increasing value (exposed with _total suffix)
+#            enum    - multi-state value. Exposed as <metric>{state="..."} 0/1 for every state
+#                      (state texts are read from the device) plus <metric>_code with the raw number
+#            bool    - binary object, 0/1
+#   scale:   optional multiplier applied to the value (e.g. hours -> seconds, kW -> W)
+#   labels:  optional static labels
+#   help:    description (defaults to the BACnet description)
+
+points:
+  # --- Ventilation: temperatures ------------------------------------------------------
+  - {object: "analog-input,1",  metric: air_temperature_celsius, labels: {position: outdoor},  type: gauge, help: "Air temperatures in the ventilation unit (B4 outdoor, B1 supply, B3 extract, B6 exhaust)"}
+  - {object: "analog-input,4",  metric: air_temperature_celsius, labels: {position: supply},   type: gauge}
+  - {object: "analog-input,59", metric: air_temperature_celsius, labels: {position: extract},  type: gauge}
+  - {object: "analog-input,11", metric: air_temperature_celsius, labels: {position: exhaust},  type: gauge}
+  - {object: "analog-value,131", metric: effective_room_temperature_celsius, type: gauge, help: "Effective room temperature (extract air on WH4)"}
+  - {object: "analog-value,132", metric: supply_air_temperature_setpoint_celsius, type: gauge}
+  - {object: "multi-state-value,41", metric: operating_mode, type: enum, help: "Present operating mode (Comfort/Pre-Comfort/Economy/Protection), selects the temperature setpoint"}
+  - {object: "analog-value,96", metric: operating_mode_setpoint_celsius, labels: {mode: comfort},     type: gauge, help: "Present heating setpoint for each operating mode"}
+  - {object: "analog-value,97", metric: operating_mode_setpoint_celsius, labels: {mode: pre_comfort}, type: gauge}
+  - {object: "analog-value,98", metric: operating_mode_setpoint_celsius, labels: {mode: economy},     type: gauge}
+  - {object: "analog-value,99", metric: operating_mode_setpoint_celsius, labels: {mode: protection},  type: gauge}
+
+  # --- Ventilation: fans and airflow --------------------------------------------------
+  - {object: "analog-input,5",   metric: fan_speed_rpm,              labels: {fan: supply},  type: gauge, help: "Fan tacho"}
+  - {object: "analog-input,12",  metric: fan_speed_rpm,              labels: {fan: extract}, type: gauge}
+  - {object: "analog-output,3",  metric: fan_control_percent,        labels: {fan: supply},  type: gauge, help: "Fan control signal"}
+  - {object: "analog-output,4",  metric: fan_control_percent,        labels: {fan: extract}, type: gauge}
+  - {object: "analog-value,168", metric: airflow_cubic_meters_per_hour, labels: {fan: supply},  type: gauge, help: "Present air flow"}
+  - {object: "analog-value,236", metric: airflow_cubic_meters_per_hour, labels: {fan: extract}, type: gauge}
+  - {object: "analog-value,170", metric: airflow_setpoint_cubic_meters_per_hour, labels: {fan: supply},  type: gauge, help: "Present air flow setpoint"}
+  - {object: "analog-value,232", metric: airflow_setpoint_cubic_meters_per_hour, labels: {fan: extract}, type: gauge}
+  - {object: "analog-input,73",  metric: fan_pressure_pascals,       labels: {fan: supply},  type: gauge, help: "Fan differential pressure (air flow measurement)"}
+  - {object: "analog-input,72",  metric: fan_pressure_pascals,       labels: {fan: extract}, type: gauge}
+
+  # --- Ventilation: heat recovery and reheater ----------------------------------------
+  - {object: "analog-output,0",   metric: heat_recovery_rotor_percent,     type: gauge}
+  - {object: "analog-value,2023", metric: heat_recovery_efficiency_percent, type: gauge}
+  - {object: "analog-output,29",  metric: reheater_control_percent,        type: gauge, help: "Electric reheater (supply air) control signal"}
+  - {object: "analog-value,194",  metric: reheater_power_watts, scale: 1000, type: gauge, help: "Electric reheater (supply air) power"}
+  - {object: "analog-value,1977", metric: reheater_supply_setpoint_celsius, type: gauge, help: "Supply air setpoint for heating"}
+  - {object: "analog-value,196",  metric: reheater_heating_request_percent,     type: gauge, help: "Heating request to the supply air reheater from the supply air temperature control"}
+  - {object: "analog-value,195",  metric: reheater_heating_request_min_percent, type: gauge, help: "Minimum heating request to the supply air reheater"}
+
+  # --- Ventilation: modes -------------------------------------------------------------
+  - {object: "multi-state-value,42",  metric: ventilation_mode,        type: enum, help: "Present ventilation mode (Stop/Away/Home/High)"}
+  - {object: "multi-state-value,361", metric: ventilation_mode_detail, type: enum, help: "Ventilation mode incl. temporary modes (Cooker hood/Fireplace/Forced)"}
+
+  # --- Filter and alarms --------------------------------------------------------------
+  - {object: "analog-value,285",  metric: filter_operating_hours, type: gauge, help: "Air filter operating time since last replacement"}
+  - {object: "analog-value,286",  metric: filter_replace_interval_hours, type: gauge}
+  - {object: "analog-value,1794", metric: alarm_code, labels: {class: A}, type: gauge, help: "Present alarm code (0 = none). A = alarm, B = maintenance"}
+  - {object: "analog-value,1846", metric: alarm_code, labels: {class: B}, type: gauge}
+  - {object: "analog-value,2026", metric: alarms_in_list, type: gauge}
+  - {object: "binary-output,20",  metric: common_alarm_output, type: bool}
+  - {object: "multi-state-value,294", metric: maintenance_function, type: enum, help: "Maintenance function in progress (legionella prevention, heat recovery stop, valve and damper exercise)"}
+
+  # --- Heat pump (CO2) ----------------------------------------------------------------
+  - {object: "multi-state-input,1",   metric: heat_pump_state,       type: enum}
+  - {object: "multi-state-value,40",  metric: heat_pump_plant_mode,  type: enum, help: "What the heat pump system is doing (load tank / space heating / ...)"}
+  - {object: "multi-state-value,308", metric: heat_pump_protection_state, type: enum}
+  - {object: "multi-state-value,38",  metric: heat_pump_maintenance_mode, type: enum, help: "Heat pump maintenance mode (forced fan/pump/heating)"}
+  - {object: "binary-output,48",      metric: heat_pump_enabled,     type: bool}
+  - {object: "analog-input,56",  metric: heat_pump_compressor_hertz, type: gauge}
+  - {object: "analog-input,52",  metric: heat_pump_temperature_celsius, labels: {sensor: discharge_gas}, type: gauge, help: "Heat pump temperatures"}
+  - {object: "analog-input,13",  metric: heat_pump_temperature_celsius, labels: {sensor: water_in},      type: gauge}
+  - {object: "analog-input,14",  metric: heat_pump_temperature_celsius, labels: {sensor: water_out},     type: gauge}
+  - {object: "analog-input,15",  metric: heat_pump_temperature_celsius, labels: {sensor: air_inlet},     type: gauge}
+  - {object: "analog-input,51",  metric: heat_pump_temperature_celsius, labels: {sensor: deicing},       type: gauge}
+  - {object: "analog-input,53",  metric: heat_pump_temperature_celsius, labels: {sensor: inverter_heatsink}, type: gauge}
+  - {object: "analog-input,54",  metric: heat_pump_fan_speed_rpm,        type: gauge}
+  - {object: "analog-input,17",  metric: heat_pump_condenser_pump_percent, type: gauge}
+  - {object: "analog-input,16",  metric: heat_pump_fault_code,           type: gauge}
+  - {object: "analog-output,16", metric: heat_pump_flow_setpoint_celsius, type: gauge}
+  - {object: "analog-output,17", metric: heat_pump_thermal_power_request_watts, scale: 1000, type: gauge, help: "Heat pump thermic power output (requested by CU, not measured)"}
+  - {object: "analog-value,280", metric: heat_pump_power_request_percent, type: gauge}
+  - {object: "binary-input,95",  metric: heat_pump_limescale_warning, type: bool}
+  - {object: "analog-value,2286", metric: heat_pump_starts, type: counter, help: "Heat pump startup counter"}
+
+  # --- Hot water tank -----------------------------------------------------------------
+  - {object: "analog-input,70", metric: tank_temperature_celsius, labels: {position: top},    type: gauge, help: "Hot water tank temperatures"}
+  - {object: "analog-input,69", metric: tank_temperature_celsius, labels: {position: middle}, type: gauge}
+  - {object: "analog-input,58", metric: tank_temperature_celsius, labels: {position: bottom}, type: gauge}
+  - {object: "analog-input,65", metric: tank_return_temperature_celsius, type: gauge}
+  - {object: "analog-input,66", metric: flow_heater_outlet_temperature_celsius, type: gauge, help: "Temperature after flow-through heater (to tank)"}
+  - {object: "analog-value,264", metric: flow_heater_request_percent, type: gauge, help: "Electric flow-through heater (elpatron) power request"}
+  - {object: "analog-output,21", metric: flow_heater_stage_percent, labels: {stage: "1"}, type: gauge}
+  - {object: "analog-output,20", metric: flow_heater_stage_percent, labels: {stage: "2"}, type: gauge}
+  - {object: "analog-output,32", metric: tank_changeover_valve_percent, type: gauge}
+  - {object: "analog-output,26", metric: tank_consumer_valve_percent,   type: gauge, help: "Storage tank consumer valve: mixes tank water into the space heating circuit"}
+  - {object: "multi-state-value,39",  metric: dhw_mode,  type: enum, help: "Domestic hot water mode (Comfort/Economy/Boost)"}
+  - {object: "multi-state-value,423", metric: dhw_state, type: enum}
+  - {object: "analog-value,253",  metric: dhw_setpoint_celsius, labels: {mode: comfort}, type: gauge}
+  - {object: "analog-value,2127", metric: dhw_setpoint_celsius, labels: {mode: economy}, type: gauge}
+
+  # --- Space heating circuit ----------------------------------------------------------
+  - {object: "analog-input,68",   metric: heating_flow_temperature_celsius,   type: gauge}
+  - {object: "analog-input,67",   metric: heating_return_temperature_celsius, type: gauge}
+  - {object: "analog-value,258",  metric: heating_flow_setpoint_celsius,      type: gauge}
+  - {object: "analog-output,30",  metric: heating_pump_percent,               type: gauge}
+  - {object: "analog-value,1974", metric: heating_curve_shift_kelvin,         type: gauge, help: "Parallel shift of the heating curve"}
+  - {object: "analog-value,1918", metric: heating_room_setpoint_celsius,      type: gauge}
+  - {object: "analog-value,1760", metric: heating_flow_limit_celsius, labels: {limit: min}, type: gauge}
+  - {object: "analog-value,1761", metric: heating_flow_limit_celsius, labels: {limit: max}, type: gauge}
+  - {object: "analog-value,1960", metric: heating_curve_outdoor_celsius, labels: {point: "1"}, type: gauge, help: "Heating curve: outdoor temperature of each point"}
+  - {object: "analog-value,1961", metric: heating_curve_outdoor_celsius, labels: {point: "2"}, type: gauge}
+  - {object: "analog-value,1962", metric: heating_curve_outdoor_celsius, labels: {point: "3"}, type: gauge}
+  - {object: "analog-value,1963", metric: heating_curve_outdoor_celsius, labels: {point: "4"}, type: gauge}
+  - {object: "analog-value,1964", metric: heating_curve_outdoor_celsius, labels: {point: "5"}, type: gauge}
+  - {object: "analog-value,1965", metric: heating_curve_outdoor_celsius, labels: {point: "6"}, type: gauge}
+  - {object: "analog-value,1966", metric: heating_curve_outdoor_celsius, labels: {point: "7"}, type: gauge}
+  - {object: "analog-value,1967", metric: heating_curve_flow_celsius, labels: {point: "1"}, type: gauge, help: "Heating curve: flow temperature setpoint of each point"}
+  - {object: "analog-value,1968", metric: heating_curve_flow_celsius, labels: {point: "2"}, type: gauge}
+  - {object: "analog-value,1969", metric: heating_curve_flow_celsius, labels: {point: "3"}, type: gauge}
+  - {object: "analog-value,1970", metric: heating_curve_flow_celsius, labels: {point: "4"}, type: gauge}
+  - {object: "analog-value,1971", metric: heating_curve_flow_celsius, labels: {point: "5"}, type: gauge}
+  - {object: "analog-value,1972", metric: heating_curve_flow_celsius, labels: {point: "6"}, type: gauge}
+  - {object: "analog-value,1973", metric: heating_curve_flow_celsius, labels: {point: "7"}, type: gauge}
+
+  # --- Operating hours (device counts hours; exposed as seconds) ----------------------
+  - {object: "analog-value,1847", metric: operating_seconds, labels: {function: total},              scale: 3600, type: counter, help: "Operating time counters"}
+  - {object: "analog-value,1905", metric: operating_seconds, labels: {function: heat_pump},          scale: 3600, type: counter}
+  - {object: "analog-value,1906", metric: operating_seconds, labels: {function: dhw},                scale: 3600, type: counter}
+  - {object: "analog-value,1907", metric: operating_seconds, labels: {function: space_heating},      scale: 3600, type: counter}
+  - {object: "analog-value,1910", metric: operating_seconds, labels: {function: dhw_and_space_heating}, scale: 3600, type: counter}
+  - {object: "analog-value,2117", metric: operating_seconds, labels: {function: heating_from_tank},  scale: 3600, type: counter}
+  - {object: "analog-value,2116", metric: operating_seconds, labels: {function: flow_heater},        scale: 3600, type: counter}
+  - {object: "analog-value,1879", metric: operating_seconds, labels: {function: reheater},           scale: 3600, type: counter}
+  - {object: "analog-value,1851", metric: operating_seconds, labels: {function: heat_recovery},      scale: 3600, type: counter}
+  - {object: "analog-value,1913", metric: ventilation_mode_seconds, labels: {mode: stop},        scale: 3600, type: counter, help: "Time spent in each ventilation mode"}
+  - {object: "analog-value,1914", metric: ventilation_mode_seconds, labels: {mode: away},        scale: 3600, type: counter}
+  - {object: "analog-value,1915", metric: ventilation_mode_seconds, labels: {mode: home},        scale: 3600, type: counter}
+  - {object: "analog-value,1916", metric: ventilation_mode_seconds, labels: {mode: high},        scale: 3600, type: counter}
+  - {object: "analog-value,1811", metric: ventilation_mode_seconds, labels: {mode: fireplace},   scale: 3600, type: counter}
+  - {object: "analog-value,1815", metric: ventilation_mode_seconds, labels: {mode: cooker_hood}, scale: 3600, type: counter}

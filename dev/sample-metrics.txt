@@ -1,0 +1,337 @@
+# HELP wh4_up 1 if the last BACnet read of the WH4 succeeded
+# TYPE wh4_up gauge
+wh4_up 1.0
+# HELP wh4_scrape_duration_seconds Duration of the last BACnet read
+# TYPE wh4_scrape_duration_seconds gauge
+wh4_scrape_duration_seconds 0.4306220190192107
+# HELP wh4_point_errors Number of points that could not be read in the last read
+# TYPE wh4_point_errors gauge
+wh4_point_errors 0.0
+# HELP wh4_device_info Device information read via BACnet
+# TYPE wh4_device_info gauge
+wh4_device_info{application="AAS-20:SU=SiUn;APT=HvacFnct25y_A;APTV=2.425;APS=1;",firmware="FW=03.39.03.30:BL=00.05.01.0002;SVS-300.4:SBC=13.24;",model="POS3.67",name="HvacFnct25y_A",serial="800481-000000",vendor="Siemens Building Technologies"} 1.0
+# HELP wh4_air_temperature_celsius Air temperatures in the ventilation unit (B4 outdoor, B1 supply, B3 extract, B6 exhaust)
+# TYPE wh4_air_temperature_celsius gauge
+wh4_air_temperature_celsius{position="outdoor"} 0.9300000071525574
+wh4_air_temperature_celsius{position="supply"} 16.829999923706055
+wh4_air_temperature_celsius{position="extract"} 19.979999542236328
+wh4_air_temperature_celsius{position="exhaust"} 4.090000152587891
+# HELP wh4_effective_room_temperature_celsius Effective room temperature (extract air on WH4)
+# TYPE wh4_effective_room_temperature_celsius gauge
+wh4_effective_room_temperature_celsius 19.979999542236328
+# HELP wh4_supply_air_temperature_setpoint_celsius analog-value,132
+# TYPE wh4_supply_air_temperature_setpoint_celsius gauge
+wh4_supply_air_temperature_setpoint_celsius 17.0
+# HELP wh4_operating_mode_code Present operating mode (Comfort/Pre-Comfort/Economy/Protection), selects the temperature setpoint (raw state number)
+# TYPE wh4_operating_mode_code gauge
+wh4_operating_mode_code 3.0
+# HELP wh4_operating_mode Present operating mode (Comfort/Pre-Comfort/Economy/Protection), selects the temperature setpoint
+# TYPE wh4_operating_mode gauge
+wh4_operating_mode{state="Protection"} 0.0
+wh4_operating_mode{state="Economy"} 0.0
+wh4_operating_mode{state="Pre-Comfort"} 1.0
+wh4_operating_mode{state="Comfort"} 0.0
+# HELP wh4_operating_mode_setpoint_celsius Present heating setpoint for each operating mode
+# TYPE wh4_operating_mode_setpoint_celsius gauge
+wh4_operating_mode_setpoint_celsius{mode="comfort"} 17.5
+wh4_operating_mode_setpoint_celsius{mode="pre_comfort"} 17.0
+wh4_operating_mode_setpoint_celsius{mode="economy"} 17.0
+wh4_operating_mode_setpoint_celsius{mode="protection"} 10.0
+# HELP wh4_fan_speed_rpm Fan tacho
+# TYPE wh4_fan_speed_rpm gauge
+wh4_fan_speed_rpm{fan="supply"} 2514.0
+wh4_fan_speed_rpm{fan="extract"} 1990.0001220703125
+# HELP wh4_fan_control_percent Fan control signal
+# TYPE wh4_fan_control_percent gauge
+wh4_fan_control_percent{fan="supply"} 69.5958251953125
+wh4_fan_control_percent{fan="extract"} 55.45509719848633
+# HELP wh4_airflow_cubic_meters_per_hour Present air flow
+# TYPE wh4_airflow_cubic_meters_per_hour gauge
+wh4_airflow_cubic_meters_per_hour{fan="supply"} 256.7702331542969
+wh4_airflow_cubic_meters_per_hour{fan="extract"} 266.2578125
+# HELP wh4_airflow_setpoint_cubic_meters_per_hour Present air flow setpoint
+# TYPE wh4_airflow_setpoint_cubic_meters_per_hour gauge
+wh4_airflow_setpoint_cubic_meters_per_hour{fan="supply"} 256.39898681640625
+wh4_airflow_setpoint_cubic_meters_per_hour{fan="extract"} 267.1990051269531
+# HELP wh4_fan_pressure_pascals Fan differential pressure (air flow measurement)
+# TYPE wh4_fan_pressure_pascals gauge
+wh4_fan_pressure_pascals{fan="supply"} 82.0
+wh4_fan_pressure_pascals{fan="extract"} 101.0
+# HELP wh4_heat_recovery_rotor_percent analog-output,0
+# TYPE wh4_heat_recovery_rotor_percent gauge
+wh4_heat_recovery_rotor_percent 100.0
+# HELP wh4_heat_recovery_efficiency_percent analog-value,2023
+# TYPE wh4_heat_recovery_efficiency_percent gauge
+wh4_heat_recovery_efficiency_percent 83.41207885742188
+# HELP wh4_reheater_control_percent Electric reheater (supply air) control signal
+# TYPE wh4_reheater_control_percent gauge
+wh4_reheater_control_percent 12.792792320251465
+# HELP wh4_reheater_power_watts Electric reheater (supply air) power
+# TYPE wh4_reheater_power_watts gauge
+wh4_reheater_power_watts 93.40590238571167
+# HELP wh4_reheater_supply_setpoint_celsius Supply air setpoint for heating
+# TYPE wh4_reheater_supply_setpoint_celsius gauge
+wh4_reheater_supply_setpoint_celsius 17.0
+# HELP wh4_reheater_heating_request_percent Heating request to the supply air reheater from the supply air temperature control
+# TYPE wh4_reheater_heating_request_percent gauge
+wh4_reheater_heating_request_percent 31.81818199157715
+# HELP wh4_reheater_heating_request_min_percent Minimum heating request to the supply air reheater
+# TYPE wh4_reheater_heating_request_min_percent gauge
+wh4_reheater_heating_request_min_percent 15.318185806274414
+# HELP wh4_ventilation_mode_code Present ventilation mode (Stop/Away/Home/High) (raw state number)
+# TYPE wh4_ventilation_mode_code gauge
+wh4_ventilation_mode_code 3.0
+# HELP wh4_ventilation_mode Present ventilation mode (Stop/Away/Home/High)
+# TYPE wh4_ventilation_mode gauge
+wh4_ventilation_mode{state="Stop"} 0.0
+wh4_ventilation_mode{state="Away"} 0.0
+wh4_ventilation_mode{state="Home"} 1.0
+wh4_ventilation_mode{state="High"} 0.0
+# HELP wh4_ventilation_mode_detail_code Ventilation mode incl. temporary modes (Cooker hood/Fireplace/Forced) (raw state number)
+# TYPE wh4_ventilation_mode_detail_code gauge
+wh4_ventilation_mode_detail_code 3.0
+# HELP wh4_ventilation_mode_detail Ventilation mode incl. temporary modes (Cooker hood/Fireplace/Forced)
+# TYPE wh4_ventilation_mode_detail gauge
+wh4_ventilation_mode_detail{state="Off"} 0.0
+wh4_ventilation_mode_detail{state="Away"} 0.0
+wh4_ventilation_mode_detail{state="Home"} 1.0
+wh4_ventilation_mode_detail{state="High"} 0.0
+wh4_ventilation_mode_detail{state="Cocker hood"} 0.0
+wh4_ventilation_mode_detail{state="Fireplace"} 0.0
+wh4_ventilation_mode_detail{state="Forced ventilation"} 0.0
+# HELP wh4_filter_operating_hours Air filter operating time since last replacement
+# TYPE wh4_filter_operating_hours gauge
+wh4_filter_operating_hours 7940.0
+# HELP wh4_filter_replace_interval_hours analog-value,286
+# TYPE wh4_filter_replace_interval_hours gauge
+wh4_filter_replace_interval_hours 6588.0
+# HELP wh4_alarm_code Present alarm code (0 = none). A = alarm, B = maintenance
+# TYPE wh4_alarm_code gauge
+wh4_alarm_code{class="A"} 0.0
+wh4_alarm_code{class="B"} 1020.0
+# HELP wh4_alarms_in_list analog-value,2026
+# TYPE wh4_alarms_in_list gauge
+wh4_alarms_in_list 1.0
+# HELP wh4_common_alarm_output binary-output,20
+# TYPE wh4_common_alarm_output gauge
+wh4_common_alarm_output 1.0
+# HELP wh4_maintenance_function_code Maintenance function in progress (legionella prevention, heat recovery stop, valve and damper exercise) (raw state number)
+# TYPE wh4_maintenance_function_code gauge
+wh4_maintenance_function_code 1.0
+# HELP wh4_maintenance_function Maintenance function in progress (legionella prevention, heat recovery stop, valve and damper exercise)
+# TYPE wh4_maintenance_function gauge
+wh4_maintenance_function{state="None"} 1.0
+wh4_maintenance_function{state="Legionella prevention, DHW"} 0.0
+wh4_maintenance_function{state="Legionella prevention, SH"} 0.0
+wh4_maintenance_function{state="Heat revovery, stop request"} 0.0
+wh4_maintenance_function{state="Legionella prevention, VH"} 0.0
+wh4_maintenance_function{state="Fire damper, test"} 0.0
+wh4_maintenance_function{state="Maintenance, valve and damper"} 0.0
+wh4_maintenance_function{state="Heat revovery, restart request"} 0.0
+# HELP wh4_heat_pump_state_code multi-state-input,1 (raw state number)
+# TYPE wh4_heat_pump_state_code gauge
+wh4_heat_pump_state_code 10.0
+# HELP wh4_heat_pump_state multi-state-input,1
+# TYPE wh4_heat_pump_state gauge
+wh4_heat_pump_state{state="Standby"} 0.0
+wh4_heat_pump_state{state="Air purge process"} 0.0
+wh4_heat_pump_state{state="Startup process"} 0.0
+wh4_heat_pump_state{state="Normal operation"} 0.0
+wh4_heat_pump_state{state="Stop process"} 0.0
+wh4_heat_pump_state{state="Defrost operation"} 0.0
+wh4_heat_pump_state{state="Standby when error"} 0.0
+wh4_heat_pump_state{state="Manual operation"} 0.0
+wh4_heat_pump_state{state="Forced fan operation"} 0.0
+wh4_heat_pump_state{state="Forced pump operation"} 1.0
+wh4_heat_pump_state{state="State 10"} 0.0
+wh4_heat_pump_state{state="State 11"} 0.0
+wh4_heat_pump_state{state="State 12"} 0.0
+wh4_heat_pump_state{state="State 13"} 0.0
+wh4_heat_pump_state{state="State 14"} 0.0
+wh4_heat_pump_state{state="State 15"} 0.0
+# HELP wh4_heat_pump_plant_mode_code What the heat pump system is doing (load tank / space heating / ...) (raw state number)
+# TYPE wh4_heat_pump_plant_mode_code gauge
+wh4_heat_pump_plant_mode_code 5.0
+# HELP wh4_heat_pump_plant_mode What the heat pump system is doing (load tank / space heating / ...)
+# TYPE wh4_heat_pump_plant_mode gauge
+wh4_heat_pump_plant_mode{state="Off"} 0.0
+wh4_heat_pump_plant_mode{state="Vent.heating from tank"} 0.0
+wh4_heat_pump_plant_mode{state="Load tank"} 0.0
+wh4_heat_pump_plant_mode{state="Load tank & vent.heating"} 0.0
+wh4_heat_pump_plant_mode{state="Space heating from tank"} 1.0
+wh4_heat_pump_plant_mode{state="Space heat.& vent.heat.from tank"} 0.0
+wh4_heat_pump_plant_mode{state="Load tank & space heat."} 0.0
+wh4_heat_pump_plant_mode{state="Load tank & space heat.& vent."} 0.0
+wh4_heat_pump_plant_mode{state="HP not available"} 0.0
+wh4_heat_pump_plant_mode{state="Swi-off delay flow through heat."} 0.0
+wh4_heat_pump_plant_mode{state="Legionella prev.vent.heat."} 0.0
+wh4_heat_pump_plant_mode{state="Legionella prev.space heat."} 0.0
+wh4_heat_pump_plant_mode{state="Space heat.with HP"} 0.0
+wh4_heat_pump_plant_mode{state="Space heat.& vent.with HP"} 0.0
+wh4_heat_pump_plant_mode{state="Load tank & space heat.with HP"} 0.0
+wh4_heat_pump_plant_mode{state="Load tank & vent.& space with HP"} 0.0
+wh4_heat_pump_plant_mode{state="Legionella prev.tank"} 0.0
+# HELP wh4_heat_pump_protection_state_code multi-state-value,308 (raw state number)
+# TYPE wh4_heat_pump_protection_state_code gauge
+wh4_heat_pump_protection_state_code 1.0
+# HELP wh4_heat_pump_protection_state multi-state-value,308
+# TYPE wh4_heat_pump_protection_state gauge
+wh4_heat_pump_protection_state{state="Normal"} 1.0
+wh4_heat_pump_protection_state{state="Defrost"} 0.0
+wh4_heat_pump_protection_state{state="Freeze"} 0.0
+wh4_heat_pump_protection_state{state="Air purge"} 0.0
+# HELP wh4_heat_pump_maintenance_mode_code Heat pump maintenance mode (forced fan/pump/heating) (raw state number)
+# TYPE wh4_heat_pump_maintenance_mode_code gauge
+wh4_heat_pump_maintenance_mode_code 1.0
+# HELP wh4_heat_pump_maintenance_mode Heat pump maintenance mode (forced fan/pump/heating)
+# TYPE wh4_heat_pump_maintenance_mode gauge
+wh4_heat_pump_maintenance_mode{state="None"} 1.0
+wh4_heat_pump_maintenance_mode{state="Forced fan"} 0.0
+wh4_heat_pump_maintenance_mode{state="Forced pump air purge"} 0.0
+wh4_heat_pump_maintenance_mode{state="Forced heating"} 0.0
+wh4_heat_pump_maintenance_mode{state="Forced pump"} 0.0
+# HELP wh4_heat_pump_enabled binary-output,48
+# TYPE wh4_heat_pump_enabled gauge
+wh4_heat_pump_enabled 0.0
+# HELP wh4_heat_pump_compressor_hertz analog-input,56
+# TYPE wh4_heat_pump_compressor_hertz gauge
+wh4_heat_pump_compressor_hertz 0.0
+# HELP wh4_heat_pump_temperature_celsius Heat pump temperatures
+# TYPE wh4_heat_pump_temperature_celsius gauge
+wh4_heat_pump_temperature_celsius{sensor="discharge_gas"} 25.299999237060547
+wh4_heat_pump_temperature_celsius{sensor="water_in"} 21.600000381469727
+wh4_heat_pump_temperature_celsius{sensor="water_out"} 26.700000762939453
+wh4_heat_pump_temperature_celsius{sensor="air_inlet"} 5.199999809265137
+wh4_heat_pump_temperature_celsius{sensor="deicing"} 5.099999904632568
+wh4_heat_pump_temperature_celsius{sensor="inverter_heatsink"} 0.0
+# HELP wh4_heat_pump_fan_speed_rpm analog-input,54
+# TYPE wh4_heat_pump_fan_speed_rpm gauge
+wh4_heat_pump_fan_speed_rpm 0.0
+# HELP wh4_heat_pump_condenser_pump_percent analog-input,17
+# TYPE wh4_heat_pump_condenser_pump_percent gauge
+wh4_heat_pump_condenser_pump_percent 39.86440658569336
+# HELP wh4_heat_pump_fault_code analog-input,16
+# TYPE wh4_heat_pump_fault_code gauge
+wh4_heat_pump_fault_code 0.0
+# HELP wh4_heat_pump_flow_setpoint_celsius analog-output,16
+# TYPE wh4_heat_pump_flow_setpoint_celsius gauge
+wh4_heat_pump_flow_setpoint_celsius 0.0
+# HELP wh4_heat_pump_thermal_power_request_watts Heat pump thermic power output (requested by CU, not measured)
+# TYPE wh4_heat_pump_thermal_power_request_watts gauge
+wh4_heat_pump_thermal_power_request_watts 0.0
+# HELP wh4_heat_pump_power_request_percent analog-value,280
+# TYPE wh4_heat_pump_power_request_percent gauge
+wh4_heat_pump_power_request_percent 0.0
+# HELP wh4_heat_pump_limescale_warning binary-input,95
+# TYPE wh4_heat_pump_limescale_warning gauge
+wh4_heat_pump_limescale_warning 0.0
+# HELP wh4_heat_pump_starts_total Heat pump startup counter
+# TYPE wh4_heat_pump_starts_total counter
+wh4_heat_pump_starts_total 4046.0
+# HELP wh4_tank_temperature_celsius Hot water tank temperatures
+# TYPE wh4_tank_temperature_celsius gauge
+wh4_tank_temperature_celsius{position="top"} 60.400001525878906
+wh4_tank_temperature_celsius{position="middle"} 53.79999923706055
+wh4_tank_temperature_celsius{position="bottom"} 30.399999618530273
+# HELP wh4_tank_return_temperature_celsius analog-input,65
+# TYPE wh4_tank_return_temperature_celsius gauge
+wh4_tank_return_temperature_celsius 33.400001525878906
+# HELP wh4_flow_heater_outlet_temperature_celsius Temperature after flow-through heater (to tank)
+# TYPE wh4_flow_heater_outlet_temperature_celsius gauge
+wh4_flow_heater_outlet_temperature_celsius 42.099998474121094
+# HELP wh4_flow_heater_request_percent Electric flow-through heater (elpatron) power request
+# TYPE wh4_flow_heater_request_percent gauge
+wh4_flow_heater_request_percent 0.0
+# HELP wh4_flow_heater_stage_percent analog-output,21
+# TYPE wh4_flow_heater_stage_percent gauge
+wh4_flow_heater_stage_percent{stage="1"} 0.0
+wh4_flow_heater_stage_percent{stage="2"} 0.0
+# HELP wh4_tank_changeover_valve_percent analog-output,32
+# TYPE wh4_tank_changeover_valve_percent gauge
+wh4_tank_changeover_valve_percent 0.0
+# HELP wh4_tank_consumer_valve_percent Storage tank consumer valve: mixes tank water into the space heating circuit
+# TYPE wh4_tank_consumer_valve_percent gauge
+wh4_tank_consumer_valve_percent 5.394306182861328
+# HELP wh4_dhw_mode_code Domestic hot water mode (Comfort/Economy/Boost) (raw state number)
+# TYPE wh4_dhw_mode_code gauge
+wh4_dhw_mode_code 2.0
+# HELP wh4_dhw_mode Domestic hot water mode (Comfort/Economy/Boost)
+# TYPE wh4_dhw_mode gauge
+wh4_dhw_mode{state="Comfort"} 0.0
+wh4_dhw_mode{state="Economy"} 1.0
+wh4_dhw_mode{state="Boost"} 0.0
+# HELP wh4_dhw_state_code multi-state-value,423 (raw state number)
+# TYPE wh4_dhw_state_code gauge
+wh4_dhw_state_code 2.0
+# HELP wh4_dhw_state multi-state-value,423
+# TYPE wh4_dhw_state gauge
+wh4_dhw_state{state="Comfort"} 0.0
+wh4_dhw_state{state="Economy"} 1.0
+wh4_dhw_state{state="Boost"} 0.0
+wh4_dhw_state{state="Temporary boost"} 0.0
+wh4_dhw_state{state="Forced charge"} 0.0
+wh4_dhw_state{state="Economy delay"} 0.0
+wh4_dhw_state{state="Legionella prevention"} 0.0
+# HELP wh4_dhw_setpoint_celsius analog-value,253
+# TYPE wh4_dhw_setpoint_celsius gauge
+wh4_dhw_setpoint_celsius{mode="comfort"} 49.0
+wh4_dhw_setpoint_celsius{mode="economy"} 49.0
+# HELP wh4_heating_flow_temperature_celsius analog-input,68
+# TYPE wh4_heating_flow_temperature_celsius gauge
+wh4_heating_flow_temperature_celsius 33.79999923706055
+# HELP wh4_heating_return_temperature_celsius analog-input,67
+# TYPE wh4_heating_return_temperature_celsius gauge
+wh4_heating_return_temperature_celsius 30.0
+# HELP wh4_heating_flow_setpoint_celsius analog-value,258
+# TYPE wh4_heating_flow_setpoint_celsius gauge
+wh4_heating_flow_setpoint_celsius 33.02799987792969
+# HELP wh4_heating_pump_percent analog-output,30
+# TYPE wh4_heating_pump_percent gauge
+wh4_heating_pump_percent 30.0
+# HELP wh4_heating_curve_shift_kelvin Parallel shift of the heating curve
+# TYPE wh4_heating_curve_shift_kelvin gauge
+wh4_heating_curve_shift_kelvin 0.0
+# HELP wh4_heating_room_setpoint_celsius analog-value,1918
+# TYPE wh4_heating_room_setpoint_celsius gauge
+wh4_heating_room_setpoint_celsius 21.0
+# HELP wh4_heating_flow_limit_celsius analog-value,1760
+# TYPE wh4_heating_flow_limit_celsius gauge
+wh4_heating_flow_limit_celsius{limit="min"} 21.0
+wh4_heating_flow_limit_celsius{limit="max"} 40.0
+# HELP wh4_heating_curve_outdoor_celsius Heating curve: outdoor temperature of each point
+# TYPE wh4_heating_curve_outdoor_celsius gauge
+wh4_heating_curve_outdoor_celsius{point="1"} -30.0
+wh4_heating_curve_outdoor_celsius{point="2"} -20.0
+wh4_heating_curve_outdoor_celsius{point="3"} -10.0
+wh4_heating_curve_outdoor_celsius{point="4"} -5.0
+wh4_heating_curve_outdoor_celsius{point="5"} 0.0
+wh4_heating_curve_outdoor_celsius{point="6"} 5.0
+wh4_heating_curve_outdoor_celsius{point="7"} 15.0
+# HELP wh4_heating_curve_flow_celsius Heating curve: flow temperature setpoint of each point
+# TYPE wh4_heating_curve_flow_celsius gauge
+wh4_heating_curve_flow_celsius{point="1"} 45.0
+wh4_heating_curve_flow_celsius{point="2"} 40.0
+wh4_heating_curve_flow_celsius{point="3"} 36.5
+wh4_heating_curve_flow_celsius{point="4"} 34.0
+wh4_heating_curve_flow_celsius{point="5"} 32.0
+wh4_heating_curve_flow_celsius{point="6"} 30.0
+wh4_heating_curve_flow_celsius{point="7"} 25.0
+# HELP wh4_operating_seconds_total Operating time counters
+# TYPE wh4_operating_seconds_total counter
+wh4_operating_seconds_total{function="total"} 1.881792e+08
+wh4_operating_seconds_total{function="heat_pump"} 5.21568e+07
+wh4_operating_seconds_total{function="dhw"} 1.296e+06
+wh4_operating_seconds_total{function="space_heating"} 1.194624e+08
+wh4_operating_seconds_total{function="dhw_and_space_heating"} 2.20752e+07
+wh4_operating_seconds_total{function="heating_from_tank"} 9.39888e+07
+wh4_operating_seconds_total{function="flow_heater"} 2.8656e+06
+wh4_operating_seconds_total{function="reheater"} 6.62112e+07
+wh4_operating_seconds_total{function="heat_recovery"} 1.438272e+08
+# HELP wh4_ventilation_mode_seconds_total Time spent in each ventilation mode
+# TYPE wh4_ventilation_mode_seconds_total counter
+wh4_ventilation_mode_seconds_total{mode="stop"} 0.0
+wh4_ventilation_mode_seconds_total{mode="away"} 2.21904e+07
+wh4_ventilation_mode_seconds_total{mode="home"} 1.631376e+08
+wh4_ventilation_mode_seconds_total{mode="high"} 2.1168e+06
+wh4_ventilation_mode_seconds_total{mode="fireplace"} 0.0
+wh4_ventilation_mode_seconds_total{mode="cooker_hood"} 5.0976e+06

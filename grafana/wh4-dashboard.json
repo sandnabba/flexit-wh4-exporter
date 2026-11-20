@@ -1,0 +1,4523 @@
+{
+  "__inputs": [],
+  "title": "Flexit EcoNordic WH4",
+  "uid": "flexit-wh4",
+  "description": "Flexit EcoNordic WH4 heat pump and ventilation unit via wh4-exporter (BACnet/IP).",
+  "tags": [
+    "flexit",
+    "wh4",
+    "heat-pump",
+    "bacnet"
+  ],
+  "timezone": "browser",
+  "editable": true,
+  "graphTooltip": 1,
+  "refresh": "1m",
+  "schemaVersion": 41,
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "annotations": {
+    "list": [
+      {
+        "name": "Annotations & Alerts",
+        "builtIn": 1,
+        "type": "dashboard",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        }
+      },
+      {
+        "name": "WH4 changes",
+        "enable": true,
+        "hide": false,
+        "iconColor": "#8e8e8e",
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "target": {
+          "type": "tags",
+          "tags": [
+            "wh4"
+          ],
+          "matchAny": false,
+          "limit": 200
+        }
+      }
+    ]
+  },
+  "templating": {
+    "list": [
+      {
+        "name": "datasource",
+        "label": "Data source",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": {},
+        "hide": 0,
+        "refresh": 1
+      },
+      {
+        "name": "instance",
+        "label": "Instance",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "query": {
+          "query": "label_values(wh4_up, instance)",
+          "refId": "instance"
+        },
+        "definition": "label_values(wh4_up, instance)",
+        "refresh": 2,
+        "current": {},
+        "includeAll": false,
+        "multi": false,
+        "hide": 0,
+        "sort": 1
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Outdoor",
+      "description": "Outdoor air temperature (ventilation unit sensor B4).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_air_temperature_celsius{instance=~\"$instance\",position=\"outdoor\"}",
+          "legendFormat": "Outdoor",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value",
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Heat pump",
+      "description": "Heat pump state (multi-state-input 1).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 3,
+        "y": 0
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "max by (state) (wh4_heat_pump_state{instance=~\"$instance\"}) == 1",
+          "legendFormat": "{{state}}",
+          "refId": "A",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "name",
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Plant mode",
+      "description": "What the heat pump system is doing: loading the tank, heating the house from the tank or directly with the heat pump (multi-state-value 40).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 8,
+        "y": 0
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "max by (state) (wh4_heat_pump_plant_mode{instance=~\"$instance\"}) == 1",
+          "legendFormat": "{{state}}",
+          "refId": "A",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "name",
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Compressor",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 14,
+        "y": 0
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heat_pump_compressor_hertz{instance=~\"$instance\"}",
+          "legendFormat": "Compressor",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "hertz",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value",
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Hot water, top",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 17,
+        "y": 0
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_tank_temperature_celsius{instance=~\"$instance\",position=\"top\"}",
+          "legendFormat": "Top",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value",
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Alarm",
+      "description": "Present alarm code per class (A = alarm, B = maintenance). 0 = no alarm. Codes are listed in the Flexit GO manual, e.g. 1020 = replace filter.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 0
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_alarm_code{instance=~\"$instance\"}",
+          "legendFormat": "{{class}}",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "OK",
+                  "color": "#0ca30c",
+                  "index": 0
+                }
+              }
+            },
+            {
+              "type": "value",
+              "options": {
+                "1020": {
+                  "text": "1020 Filter",
+                  "index": 1
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#0ca30c",
+                "value": null
+              },
+              {
+                "color": "#fab219",
+                "value": 1
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#0ca30c",
+                      "value": null
+                    },
+                    {
+                      "color": "#d03b3b",
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name",
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 7,
+      "type": "row",
+      "title": "Space heating",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "panels": []
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "Heating circuit",
+      "description": "Space heating flow and return temperature. The setpoint comes from the heating curve.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 5
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heating_flow_temperature_celsius{instance=~\"$instance\"}",
+          "legendFormat": "Flow",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heating_flow_setpoint_celsius{instance=~\"$instance\"}",
+          "legendFormat": "Flow setpoint",
+          "refId": "B",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heating_return_temperature_celsius{instance=~\"$instance\"}",
+          "legendFormat": "Return",
+          "refId": "C",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": null,
+            "axisSoftMax": null,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Flow"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#eb6834"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Flow setpoint"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#eb6834"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    8,
+                    6
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Return"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 9,
+      "type": "xychart",
+      "title": "Heating curve vs. actual flow temperature",
+      "description": "Line: the 7-point heating curve configured in the unit. Dots: measured flow temperature against outdoor temperature over the selected time range.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 5
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_air_temperature_celsius{instance=~\"$instance\",position=\"outdoor\"}",
+          "legendFormat": "Outdoor",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heating_flow_temperature_celsius{instance=~\"$instance\"}",
+          "legendFormat": "Flow",
+          "refId": "B",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "max by (point) (wh4_heating_curve_outdoor_celsius{instance=~\"$instance\"})",
+          "legendFormat": "{{point}}",
+          "refId": "C",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "max by (point) (wh4_heating_curve_flow_celsius{instance=~\"$instance\"})",
+          "legendFormat": "{{point}}",
+          "refId": "D",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "joinByField",
+          "filter": {
+            "id": "byRefId",
+            "options": "/^(A|B)$/"
+          },
+          "options": {
+            "byField": "Time",
+            "mode": "inner"
+          }
+        },
+        {
+          "id": "joinByField",
+          "filter": {
+            "id": "byRefId",
+            "options": "/^(C|D)$/"
+          },
+          "options": {
+            "byField": "point",
+            "mode": "inner"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "renameByName": {
+              "Value #C": "Curve outdoor",
+              "Value #D": "Curve flow"
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "filter": {
+            "id": "byRefId",
+            "options": "/^(C|D)$/"
+          },
+          "options": {
+            "sort": [
+              {
+                "field": "Curve outdoor"
+              }
+            ]
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "#eb6834"
+          },
+          "custom": {
+            "show": "points",
+            "pointSize": {
+              "fixed": 5
+            },
+            "lineWidth": 2,
+            "fillOpacity": 50
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Curve flow"
+            },
+            "properties": [
+              {
+                "id": "custom.show",
+                "value": "points+lines"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              },
+              {
+                "id": "custom.pointSize",
+                "value": {
+                  "fixed": 8
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Flow"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#eb6834"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "mapping": "manual",
+        "series": [
+          {
+            "frame": {
+              "matcher": {
+                "id": "byIndex",
+                "options": 0
+              }
+            },
+            "x": {
+              "matcher": {
+                "id": "byName",
+                "options": "Outdoor"
+              }
+            },
+            "y": {
+              "matcher": {
+                "id": "byName",
+                "options": "Flow"
+              }
+            },
+            "name": {
+              "fixed": "Measured"
+            }
+          },
+          {
+            "frame": {
+              "matcher": {
+                "id": "byIndex",
+                "options": 1
+              }
+            },
+            "x": {
+              "matcher": {
+                "id": "byName",
+                "options": "Curve outdoor"
+              }
+            },
+            "y": {
+              "matcher": {
+                "id": "byName",
+                "options": "Curve flow"
+              }
+            },
+            "name": {
+              "fixed": "Heating curve"
+            }
+          }
+        ],
+        "legend": {
+          "showLegend": true,
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Outdoor temperature",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 14
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_air_temperature_celsius{instance=~\"$instance\",position=\"outdoor\"}",
+          "legendFormat": "Outdoor",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": null,
+            "axisSoftMax": null,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Outdoor"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Heating circulation pump",
+      "description": "Speed of the space heating circulation pump.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 14
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heating_pump_percent{instance=~\"$instance\"}",
+          "legendFormat": "Circulation pump",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": 0,
+            "axisSoftMax": 100,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Circulation pump"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "Mixing valve, tank to heating circuit",
+      "description": "Storage tank consumer valve (analog-output 26). It mixes hot tank water into the space heating circuit when the house is heated from the tank. With a hot tank and a low flow setpoint it works in the bottom few percent, where small movements give large flow temperature steps. The axis is not fixed at 100 % so these movements stay visible.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 14
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_tank_consumer_valve_percent{instance=~\"$instance\"}",
+          "legendFormat": "Mixing valve",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": 0,
+            "axisSoftMax": null,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          },
+          "decimals": 1
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Mixing valve"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#1baf7a"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 13,
+      "type": "row",
+      "title": "Heat pump",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "panels": []
+    },
+    {
+      "id": 14,
+      "type": "state-timeline",
+      "title": "Operating states",
+      "description": "Heat pump state, plant mode, hot water state, ventilation mode and operating mode (selects the temperature setpoint). Maintenance functions are at the bottom.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 22
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heat_pump_state_code{instance=~\"$instance\"}",
+          "legendFormat": "Heat pump",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heat_pump_plant_mode_code{instance=~\"$instance\"}",
+          "legendFormat": "Plant mode",
+          "refId": "B",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_dhw_state_code{instance=~\"$instance\"}",
+          "legendFormat": "Hot water",
+          "refId": "C",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_ventilation_mode_detail_code{instance=~\"$instance\"}",
+          "legendFormat": "Ventilation",
+          "refId": "D",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_operating_mode_code{instance=~\"$instance\"}",
+          "legendFormat": "Operating mode",
+          "refId": "E",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "#8e8e8e"
+          },
+          "custom": {
+            "fillOpacity": 85,
+            "lineWidth": 0
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Heat pump"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "1": {
+                        "text": "Standby",
+                        "color": "#8e8e8e",
+                        "index": 0
+                      },
+                      "2": {
+                        "text": "Air purge process",
+                        "color": "#e87ba4",
+                        "index": 1
+                      },
+                      "3": {
+                        "text": "Startup process",
+                        "color": "#1baf7a",
+                        "index": 2
+                      },
+                      "4": {
+                        "text": "Normal operation",
+                        "color": "#2a78d6",
+                        "index": 3
+                      },
+                      "5": {
+                        "text": "Stop process",
+                        "color": "#1baf7a",
+                        "index": 4
+                      },
+                      "6": {
+                        "text": "Defrost operation",
+                        "color": "#6250d6",
+                        "index": 5
+                      },
+                      "7": {
+                        "text": "Standby when error",
+                        "color": "#d03b3b",
+                        "index": 6
+                      },
+                      "8": {
+                        "text": "Manual operation",
+                        "color": "#e87ba4",
+                        "index": 7
+                      },
+                      "9": {
+                        "text": "Forced fan operation",
+                        "color": "#e87ba4",
+                        "index": 8
+                      },
+                      "10": {
+                        "text": "Forced pump operation",
+                        "color": "#e87ba4",
+                        "index": 9
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Plant mode"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "1": {
+                        "text": "Off",
+                        "color": "#8e8e8e",
+                        "index": 0
+                      },
+                      "2": {
+                        "text": "Vent.heating from tank",
+                        "color": "#1baf7a",
+                        "index": 1
+                      },
+                      "3": {
+                        "text": "Load tank",
+                        "color": "#eb6834",
+                        "index": 2
+                      },
+                      "4": {
+                        "text": "Load tank & vent.heating",
+                        "color": "#eb6834",
+                        "index": 3
+                      },
+                      "5": {
+                        "text": "Space heating from tank",
+                        "color": "#1baf7a",
+                        "index": 4
+                      },
+                      "6": {
+                        "text": "Space heat.& vent.heat.from tank",
+                        "color": "#1baf7a",
+                        "index": 5
+                      },
+                      "7": {
+                        "text": "Load tank & space heat.",
+                        "color": "#eb6834",
+                        "index": 6
+                      },
+                      "8": {
+                        "text": "Load tank & space heat.& vent.",
+                        "color": "#eb6834",
+                        "index": 7
+                      },
+                      "9": {
+                        "text": "HP not available",
+                        "color": "#d03b3b",
+                        "index": 8
+                      },
+                      "10": {
+                        "text": "Swi-off delay flow through heat.",
+                        "color": "#8e8e8e",
+                        "index": 9
+                      },
+                      "11": {
+                        "text": "Legionella prev.vent.heat.",
+                        "color": "#eda100",
+                        "index": 10
+                      },
+                      "12": {
+                        "text": "Legionella prev.space heat.",
+                        "color": "#eda100",
+                        "index": 11
+                      },
+                      "13": {
+                        "text": "Space heat.with HP",
+                        "color": "#2a78d6",
+                        "index": 12
+                      },
+                      "14": {
+                        "text": "Space heat.& vent.with HP",
+                        "color": "#2a78d6",
+                        "index": 13
+                      },
+                      "15": {
+                        "text": "Load tank & space heat.with HP",
+                        "color": "#6250d6",
+                        "index": 14
+                      },
+                      "16": {
+                        "text": "Load tank & vent.& space with HP",
+                        "color": "#6250d6",
+                        "index": 15
+                      },
+                      "17": {
+                        "text": "Legionella prev.tank",
+                        "color": "#eda100",
+                        "index": 16
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Hot water"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "1": {
+                        "text": "Comfort",
+                        "color": "#eb6834",
+                        "index": 0
+                      },
+                      "2": {
+                        "text": "Economy",
+                        "color": "#1baf7a",
+                        "index": 1
+                      },
+                      "3": {
+                        "text": "Boost",
+                        "color": "#e34948",
+                        "index": 2
+                      },
+                      "4": {
+                        "text": "Temporary boost",
+                        "color": "#e34948",
+                        "index": 3
+                      },
+                      "5": {
+                        "text": "Forced charge",
+                        "color": "#e34948",
+                        "index": 4
+                      },
+                      "6": {
+                        "text": "Economy delay",
+                        "color": "#1baf7a",
+                        "index": 5
+                      },
+                      "7": {
+                        "text": "Legionella prevention",
+                        "color": "#eda100",
+                        "index": 6
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Ventilation"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "1": {
+                        "text": "Off",
+                        "color": "#8e8e8e",
+                        "index": 0
+                      },
+                      "2": {
+                        "text": "Away",
+                        "color": "#1baf7a",
+                        "index": 1
+                      },
+                      "3": {
+                        "text": "Home",
+                        "color": "#2a78d6",
+                        "index": 2
+                      },
+                      "4": {
+                        "text": "High",
+                        "color": "#eb6834",
+                        "index": 3
+                      },
+                      "5": {
+                        "text": "Cooker hood",
+                        "color": "#e87ba4",
+                        "index": 4
+                      },
+                      "6": {
+                        "text": "Fireplace",
+                        "color": "#e34948",
+                        "index": 5
+                      },
+                      "7": {
+                        "text": "Forced ventilation",
+                        "color": "#6250d6",
+                        "index": 6
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Operating mode"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "1": {
+                        "text": "Protection",
+                        "color": "#8e8e8e",
+                        "index": 0
+                      },
+                      "2": {
+                        "text": "Economy",
+                        "color": "#1baf7a",
+                        "index": 1
+                      },
+                      "3": {
+                        "text": "Pre-Comfort",
+                        "color": "#2a78d6",
+                        "index": 2
+                      },
+                      "4": {
+                        "text": "Comfort",
+                        "color": "#eb6834",
+                        "index": 3
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showValue": "auto",
+        "mergeValues": true,
+        "alignValue": "left",
+        "rowHeight": 0.85,
+        "legend": {
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 15,
+      "type": "timeseries",
+      "title": "Compressor speed",
+      "description": "Inverter compressor speed feedback.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 31
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heat_pump_compressor_hertz{instance=~\"$instance\"}",
+          "legendFormat": "Compressor",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "hertz",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": 0,
+            "axisSoftMax": null,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Compressor"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 16,
+      "type": "timeseries",
+      "title": "Heat pump water and hot gas",
+      "description": "Water in/out of the CO2 gas cooler and compressor discharge (hot gas) temperature.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 31
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heat_pump_temperature_celsius{instance=~\"$instance\",sensor=\"water_out\"}",
+          "legendFormat": "Water out",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heat_pump_temperature_celsius{instance=~\"$instance\",sensor=\"water_in\"}",
+          "legendFormat": "Water in",
+          "refId": "B",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heat_pump_temperature_celsius{instance=~\"$instance\",sensor=\"discharge_gas\"}",
+          "legendFormat": "Discharge gas",
+          "refId": "C",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": null,
+            "axisSoftMax": null,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Water out"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#eb6834"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Water in"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Discharge gas"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#1baf7a"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 17,
+      "type": "timeseries",
+      "title": "Heat pump air side",
+      "description": "Air entering the heat pump (exhaust air from the ventilation mixed with outdoor air) and the evaporator de-icing sensor.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 31
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heat_pump_temperature_celsius{instance=~\"$instance\",sensor=\"air_inlet\"}",
+          "legendFormat": "Air inlet",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heat_pump_temperature_celsius{instance=~\"$instance\",sensor=\"deicing\"}",
+          "legendFormat": "De-icing",
+          "refId": "B",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": null,
+            "axisSoftMax": null,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Air inlet"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "De-icing"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#1baf7a"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 18,
+      "type": "timeseries",
+      "title": "Condenser pump",
+      "description": "Pump that circulates water from the bottom of the tank through the heat pump's gas cooler and back to the tank. A low flow during loading gives a high outlet temperature in one pass. It may also run while the compressor is off (Forced pump operation).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 39
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heat_pump_condenser_pump_percent{instance=~\"$instance\"}",
+          "legendFormat": "Condenser pump",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": 0,
+            "axisSoftMax": 100,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Condenser pump"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 19,
+      "type": "timeseries",
+      "title": "Heat pump fan",
+      "description": "Fan that draws air through the heat pump's evaporator. It also helps the ventilation unit's extract fan while the heat pump runs.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 39
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heat_pump_fan_speed_rpm{instance=~\"$instance\"}",
+          "legendFormat": "Heat pump fan",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix: rpm",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": 0,
+            "axisSoftMax": null,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Heat pump fan"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 20,
+      "type": "timeseries",
+      "title": "Tank changeover valve",
+      "description": "Valve that decides where in the tank the water from the heat pump returns.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 39
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_tank_changeover_valve_percent{instance=~\"$instance\"}",
+          "legendFormat": "Changeover valve",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": 0,
+            "axisSoftMax": 100,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Changeover valve"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 21,
+      "type": "row",
+      "title": "Hot water and electric heaters",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 46
+      },
+      "panels": []
+    },
+    {
+      "id": 22,
+      "type": "timeseries",
+      "title": "Tank temperatures",
+      "description": "Hot water tank sensors. In Economy mode the tank is reloaded when the top sensor drops, in Comfort mode when the middle sensor drops.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 47
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_tank_temperature_celsius{instance=~\"$instance\",position=\"top\"}",
+          "legendFormat": "Top",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_tank_temperature_celsius{instance=~\"$instance\",position=\"middle\"}",
+          "legendFormat": "Middle",
+          "refId": "B",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_tank_temperature_celsius{instance=~\"$instance\",position=\"bottom\"}",
+          "legendFormat": "Bottom",
+          "refId": "C",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": null,
+            "axisSoftMax": null,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Top"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#eb6834"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Middle"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#1baf7a"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Bottom"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 23,
+      "type": "timeseries",
+      "title": "Electric heaters",
+      "description": "Direct electric heating. The flow-through heater (3 kW) backs up hot water and space heating; the reheater heats the supply air when heat recovery is not enough.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 47
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_flow_heater_request_percent{instance=~\"$instance\"}",
+          "legendFormat": "Flow-through heater (water)",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_reheater_control_percent{instance=~\"$instance\"}",
+          "legendFormat": "Supply air reheater",
+          "refId": "B",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": 0,
+            "axisSoftMax": 100,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Flow-through heater (water)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Supply air reheater"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#eb6834"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 24,
+      "type": "timeseries",
+      "title": "Supply air reheater control",
+      "description": "Heating request from the supply air temperature control to the electric reheater (analog-value 196), its minimum (analog-value 195) and the reheater output signal.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 55
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_reheater_control_percent{instance=~\"$instance\"}",
+          "legendFormat": "Output",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_reheater_heating_request_percent{instance=~\"$instance\"}",
+          "legendFormat": "Heating request",
+          "refId": "B",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_reheater_heating_request_min_percent{instance=~\"$instance\"}",
+          "legendFormat": "Minimum request",
+          "refId": "C",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": 0,
+            "axisSoftMax": 100,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Output"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#eb6834"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Heating request"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Minimum request"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    8,
+                    6
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 25,
+      "type": "timeseries",
+      "title": "Supply air reheater power",
+      "description": "Electric power of the supply air reheater as calculated by the unit.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 12,
+        "y": 55
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_reheater_power_watts{instance=~\"$instance\"}",
+          "legendFormat": "Power",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": 0,
+            "axisSoftMax": null,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Power"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#eb6834"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 26,
+      "type": "stat",
+      "title": "Reheater energy",
+      "description": "Supply air reheater energy over the selected time range (average power x time).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 55
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "avg_over_time(wh4_reheater_power_watts{instance=~\"$instance\"}[$__range]) * $__range_s / 3600 / 1000",
+          "legendFormat": "Energy",
+          "refId": "A",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value",
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 27,
+      "type": "stat",
+      "title": "Reheater avg. power",
+      "description": "Average supply air reheater power over the selected time range.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 59
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "avg_over_time(wh4_reheater_power_watts{instance=~\"$instance\"}[$__range])",
+          "legendFormat": "Average",
+          "refId": "A",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value",
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 28,
+      "type": "row",
+      "title": "Ventilation",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 63
+      },
+      "panels": []
+    },
+    {
+      "id": 29,
+      "type": "timeseries",
+      "title": "Air temperatures",
+      "description": "Extract air is the best available proxy for indoor temperature on the WH4.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 64
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_air_temperature_celsius{instance=~\"$instance\",position=\"supply\"}",
+          "legendFormat": "Supply",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_air_temperature_celsius{instance=~\"$instance\",position=\"extract\"}",
+          "legendFormat": "Extract",
+          "refId": "B",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_air_temperature_celsius{instance=~\"$instance\",position=\"exhaust\"}",
+          "legendFormat": "Exhaust",
+          "refId": "C",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_air_temperature_celsius{instance=~\"$instance\",position=\"outdoor\"}",
+          "legendFormat": "Outdoor",
+          "refId": "D",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": null,
+            "axisSoftMax": null,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Supply"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#eb6834"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Extract"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Exhaust"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#1baf7a"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Outdoor"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#6250d6"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 30,
+      "type": "timeseries",
+      "title": "Air flow",
+      "description": "Measured air flow and its setpoint. The setpoint changes with the ventilation mode, e.g. Cooker hood lowers extract air because the kitchen hood extracts on its own.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 64
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_airflow_cubic_meters_per_hour{instance=~\"$instance\",fan=\"supply\"}",
+          "legendFormat": "Supply",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_airflow_cubic_meters_per_hour{instance=~\"$instance\",fan=\"extract\"}",
+          "legendFormat": "Extract",
+          "refId": "B",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_airflow_setpoint_cubic_meters_per_hour{instance=~\"$instance\",fan=\"supply\"}",
+          "legendFormat": "Supply setpoint",
+          "refId": "C",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_airflow_setpoint_cubic_meters_per_hour{instance=~\"$instance\",fan=\"extract\"}",
+          "legendFormat": "Extract setpoint",
+          "refId": "D",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix: m³/h",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": 0,
+            "axisSoftMax": null,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Supply"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#eb6834"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Extract"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Supply setpoint"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#eb6834"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    8,
+                    6
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Extract setpoint"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    8,
+                    6
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 31,
+      "type": "timeseries",
+      "title": "Heat recovery",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 72
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heat_recovery_efficiency_percent{instance=~\"$instance\"}",
+          "legendFormat": "Efficiency",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heat_recovery_rotor_percent{instance=~\"$instance\"}",
+          "legendFormat": "Rotor speed",
+          "refId": "B",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": 0,
+            "axisSoftMax": 100,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Efficiency"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#1baf7a"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Rotor speed"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 32,
+      "type": "timeseries",
+      "title": "Fan speed",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 72
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_fan_speed_rpm{instance=~\"$instance\",fan=\"supply\"}",
+          "legendFormat": "Supply",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_fan_speed_rpm{instance=~\"$instance\",fan=\"extract\"}",
+          "legendFormat": "Extract",
+          "refId": "B",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix: rpm",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": 0,
+            "axisSoftMax": null,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Supply"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#eb6834"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Extract"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 33,
+      "type": "timeseries",
+      "title": "Supply air setpoints",
+      "description": "Measured supply air temperature, the setpoint in use and the setpoint of each operating mode. The operating mode (see Operating states) picks which one applies, so the effective setpoint can be lower than the one set in the app. The Protection setpoint is left out to keep the scale readable.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 80
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_air_temperature_celsius{instance=~\"$instance\",position=\"supply\"}",
+          "legendFormat": "Supply air",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_supply_air_temperature_setpoint_celsius{instance=~\"$instance\"}",
+          "legendFormat": "Present setpoint",
+          "refId": "B",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_operating_mode_setpoint_celsius{instance=~\"$instance\",mode=\"comfort\"}",
+          "legendFormat": "Comfort",
+          "refId": "C",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_operating_mode_setpoint_celsius{instance=~\"$instance\",mode=\"pre_comfort\"}",
+          "legendFormat": "Pre-Comfort",
+          "refId": "D",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_operating_mode_setpoint_celsius{instance=~\"$instance\",mode=\"economy\"}",
+          "legendFormat": "Economy",
+          "refId": "E",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": null,
+            "axisSoftMax": null,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          },
+          "decimals": 1
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Supply air"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#eb6834"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Present setpoint"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#eb6834"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    8,
+                    6
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Comfort"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    8,
+                    6
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Pre-Comfort"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#1baf7a"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    8,
+                    6
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Economy"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#6250d6"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    8,
+                    6
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 34,
+      "type": "timeseries",
+      "title": "Fan differential pressure",
+      "description": "Pressure drop across each fan's inlet nozzle. The unit calculates air flow from it as K-factor x sqrt(pressure) (K-factor: analog-value 154 supply, 233 extract). This is not the pressure drop over the filter: the unit holds the air flow constant, so this pressure only changes with the ventilation mode. See Fan speed per air flow for filter clogging.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 80
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_fan_pressure_pascals{instance=~\"$instance\",fan=\"supply\"}",
+          "legendFormat": "Supply",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_fan_pressure_pascals{instance=~\"$instance\",fan=\"extract\"}",
+          "legendFormat": "Extract",
+          "refId": "B",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "pressurepa",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": 0,
+            "axisSoftMax": null,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Supply"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#eb6834"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Extract"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 35,
+      "type": "timeseries",
+      "title": "Fan speed per air flow (filter indicator)",
+      "description": "Fan speed needed per m³/h of air. As a filter clogs, the fan has to spin faster for the same air flow, so this ratio creeps up and drops back when the filter is replaced. Only shown in Home mode, because other modes change the air path. The extract ratio is also hidden while the heat pump compressor runs: the heat pump fan then helps the extract fan and the ratio drops by about 15 %. A temporary rise in both ratios on humid nights around or below 0 °C, together with falling heat recovery efficiency, is frost in the rotary heat exchanger rather than the filter.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 80
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "(wh4_fan_speed_rpm{instance=~\"$instance\",fan=\"supply\"} / wh4_airflow_cubic_meters_per_hour{instance=~\"$instance\",fan=\"supply\"}) and on(instance) (wh4_ventilation_mode_detail_code{instance=~\"$instance\"} == 3)",
+          "legendFormat": "Supply",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "(wh4_fan_speed_rpm{instance=~\"$instance\",fan=\"extract\"} / wh4_airflow_cubic_meters_per_hour{instance=~\"$instance\",fan=\"extract\"}) and on(instance) (wh4_ventilation_mode_detail_code{instance=~\"$instance\"} == 3) and on(instance) (wh4_heat_pump_compressor_hertz{instance=~\"$instance\"} == 0)",
+          "legendFormat": "Extract",
+          "refId": "B",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix: rpm per m³/h",
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 0,
+            "showPoints": "never",
+            "spanNulls": 120000,
+            "axisSoftMin": null,
+            "axisSoftMax": null,
+            "lineInterpolation": "linear",
+            "gradientMode": "none"
+          },
+          "decimals": 2
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Supply"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#eb6834"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Extract"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#2a78d6"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 36,
+      "type": "row",
+      "title": "Runtime and maintenance",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 88
+      },
+      "panels": []
+    },
+    {
+      "id": 37,
+      "type": "bargauge",
+      "title": "Operating hours in selected range",
+      "description": "Increase of the unit's operating hour counters over the dashboard time range. The counters have 1 hour resolution, so short ranges are coarse.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 89
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "increase(wh4_operating_seconds_total{instance=~\"$instance\",function=\"heat_pump\"}[$__range]) / 3600",
+          "legendFormat": "Heat pump",
+          "refId": "A",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "increase(wh4_operating_seconds_total{instance=~\"$instance\",function=\"space_heating\"}[$__range]) / 3600",
+          "legendFormat": "Space heating",
+          "refId": "B",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "increase(wh4_operating_seconds_total{instance=~\"$instance\",function=\"heating_from_tank\"}[$__range]) / 3600",
+          "legendFormat": "Heating from tank",
+          "refId": "C",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "increase(wh4_operating_seconds_total{instance=~\"$instance\",function=\"dhw\"}[$__range]) / 3600",
+          "legendFormat": "Hot water only",
+          "refId": "D",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "increase(wh4_operating_seconds_total{instance=~\"$instance\",function=\"dhw_and_space_heating\"}[$__range]) / 3600",
+          "legendFormat": "Hot water + space heating",
+          "refId": "E",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "increase(wh4_operating_seconds_total{instance=~\"$instance\",function=\"flow_heater\"}[$__range]) / 3600",
+          "legendFormat": "Flow-through heater",
+          "refId": "F",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "increase(wh4_operating_seconds_total{instance=~\"$instance\",function=\"reheater\"}[$__range]) / 3600",
+          "legendFormat": "Supply air reheater",
+          "refId": "G",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix: h",
+          "decimals": 1,
+          "min": 0,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "#2a78d6"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#2a78d6",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Flow-through heater"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#e34948"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Supply air reheater"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "#e34948"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "orientation": "horizontal",
+        "displayMode": "basic",
+        "showUnfilled": true,
+        "valueMode": "text",
+        "namePlacement": "left",
+        "sizing": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 38,
+      "type": "stat",
+      "title": "Heat pump starts in range",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 89
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "increase(wh4_heat_pump_starts_total{instance=~\"$instance\"}[$__range])",
+          "legendFormat": "Starts",
+          "refId": "A",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value",
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 39,
+      "type": "stat",
+      "title": "Runtime per start",
+      "description": "Average heat pump runtime per start in the selected range. Short runtimes mean frequent cycling.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 89
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "increase(wh4_operating_seconds_total{instance=~\"$instance\",function=\"heat_pump\"}[$__range]) / ignoring(function) increase(wh4_heat_pump_starts_total{instance=~\"$instance\"}[$__range])",
+          "legendFormat": "Per start",
+          "refId": "A",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value",
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 40,
+      "type": "stat",
+      "title": "Filter used",
+      "description": "Filter operating time relative to the replacement interval.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 89
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_filter_operating_hours{instance=~\"$instance\"} / wh4_filter_replace_interval_hours{instance=~\"$instance\"}",
+          "legendFormat": "Filter",
+          "refId": "A",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#0ca30c",
+                "value": null
+              },
+              {
+                "color": "#fab219",
+                "value": 0.9
+              },
+              {
+                "color": "#ec835a",
+                "value": 1.0
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value",
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 41,
+      "type": "stat",
+      "title": "Heat pump starts (total)",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 93
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heat_pump_starts_total{instance=~\"$instance\"}",
+          "legendFormat": "Starts",
+          "refId": "A",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value",
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 42,
+      "type": "stat",
+      "title": "Heat pump hours (total)",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 93
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_operating_seconds_total{instance=~\"$instance\",function=\"heat_pump\"} / 3600",
+          "legendFormat": "Hours",
+          "refId": "A",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "suffix: h",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value",
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 43,
+      "type": "stat",
+      "title": "Exporter",
+      "description": "1 if the exporter's last BACnet read succeeded.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 93
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_up{instance=~\"$instance\"}",
+          "legendFormat": "up",
+          "refId": "A",
+          "range": false,
+          "instant": true,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "1": {
+                  "text": "Up",
+                  "color": "#0ca30c",
+                  "index": 0
+                },
+                "0": {
+                  "text": "Down",
+                  "color": "#d03b3b",
+                  "index": 1
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value",
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "pluginVersion": "13.2.4"
+    },
+    {
+      "id": 44,
+      "type": "state-timeline",
+      "title": "Maintenance",
+      "description": "Maintenance functions such as legionella prevention and valve/damper exercise, and the heat pump's service mode. Normally None.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 97
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_maintenance_function_code{instance=~\"$instance\"}",
+          "legendFormat": "Maintenance",
+          "refId": "A",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "expr": "wh4_heat_pump_maintenance_mode_code{instance=~\"$instance\"}",
+          "legendFormat": "HP maintenance",
+          "refId": "B",
+          "range": true,
+          "instant": false,
+          "format": "time_series"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "#8e8e8e"
+          },
+          "custom": {
+            "fillOpacity": 85,
+            "lineWidth": 0
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Maintenance"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "1": {
+                        "text": "None",
+                        "color": "#8e8e8e",
+                        "index": 0
+                      },
+                      "2": {
+                        "text": "Legionella prevention, DHW",
+                        "color": "#eda100",
+                        "index": 1
+                      },
+                      "3": {
+                        "text": "Legionella prevention, SH",
+                        "color": "#eda100",
+                        "index": 2
+                      },
+                      "4": {
+                        "text": "Heat revovery, stop request",
+                        "color": "#6250d6",
+                        "index": 3
+                      },
+                      "5": {
+                        "text": "Legionella prevention, VH",
+                        "color": "#eda100",
+                        "index": 4
+                      },
+                      "6": {
+                        "text": "Fire damper, test",
+                        "color": "#e34948",
+                        "index": 5
+                      },
+                      "7": {
+                        "text": "Maintenance, valve and damper",
+                        "color": "#e87ba4",
+                        "index": 6
+                      },
+                      "8": {
+                        "text": "Heat revovery, restart request",
+                        "color": "#6250d6",
+                        "index": 7
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "HP maintenance"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "1": {
+                        "text": "None",
+                        "color": "#8e8e8e",
+                        "index": 0
+                      },
+                      "2": {
+                        "text": "Forced fan",
+                        "color": "#e87ba4",
+                        "index": 1
+                      },
+                      "3": {
+                        "text": "Forced pump air purge",
+                        "color": "#e87ba4",
+                        "index": 2
+                      },
+                      "4": {
+                        "text": "Forced heating",
+                        "color": "#e87ba4",
+                        "index": 3
+                      },
+                      "5": {
+                        "text": "Forced pump",
+                        "color": "#e87ba4",
+                        "index": 4
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showValue": "auto",
+        "mergeValues": true,
+        "alignValue": "left",
+        "rowHeight": 0.85,
+        "legend": {
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "13.2.4"
+    }
+  ]
+}
